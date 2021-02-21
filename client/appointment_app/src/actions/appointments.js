@@ -8,6 +8,7 @@ export const getAppointments = () => async (dispatch) => {
     dispatch({ type: "FETCH_ALL", payload: data });
   } catch (error) {
     console.log(error);
+    dispatch({ type: "ERROR", payload: error });
   }
 };
 
@@ -17,7 +18,9 @@ export const postAppointment = (appointment) => async (dispatch) => {
 
     dispatch({ type: "CREATE_APPOINTMENT", payload: data });
   } catch (error) {
-    console.log(error);
+    if (error.response && error.response.data) {
+      dispatch({ type: "ERROR", payload: error.response.data.error });
+    } else dispatch({ type: "ERROR", payload: "Errro dummy" });
   }
 };
 
@@ -28,6 +31,7 @@ export const updateAppointment = (id, appointment) => async (dispatch) => {
     dispatch({ type: "UPDATE_APPOINTMENT", payload: data });
   } catch (error) {
     console.log(error);
+    dispatch({ type: "ERROR", payload: error });
   }
 };
 
@@ -38,5 +42,6 @@ export const deleteAppointment = (id) => async (dispatch) => {
     dispatch({ type: "DELETE_APPOINTMENT", payload: id });
   } catch (error) {
     console.log(error);
+    dispatch({ type: "ERROR", payload: error });
   }
 };

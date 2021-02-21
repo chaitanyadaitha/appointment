@@ -1,8 +1,17 @@
 import React, { useState, useEffect } from "react";
 
-import { Container, AppBar, Typography, Grow, Grid } from "@material-ui/core";
+import {
+  Container,
+  AppBar,
+  Typography,
+  Grow,
+  Grid,
+  Snackbar,
+} from "@material-ui/core";
 
-import { useDispatch } from "react-redux";
+import Alert from "@material-ui/lab/Alert";
+
+import { useDispatch, useSelector } from "react-redux";
 
 import { getAppointments } from "./actions/appointments";
 
@@ -16,9 +25,18 @@ const App = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [currentId, setCurrentId] = useState(null);
+  const [openSnackBar, setOpen] = useState(false);
+
+  const error = useSelector((state) => state.appointments.error);
+  const successMessage = useSelector(
+    (state) => state.appointments.successMessage
+  );
+
+  console.log("selector", successMessage);
 
   useEffect(() => {
-    dispatch(getAppointments());
+    if (!error) dispatch(getAppointments());
+    else setOpen(true);
   }, [currentId, dispatch]);
 
   return (
@@ -28,6 +46,20 @@ const App = () => {
           Sri Gayatri Jyothisya Nilayam
         </Typography>
       </AppBar>
+      {(error || successMessage) && (
+        <Snackbar
+          autoHideDuration={3000}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          open={openSnackBar}
+        >
+          <Alert
+            onClose={() => setOpen(false)}
+            severity={`${error ? "error" : "success"}`}
+          >
+            {error || successMessage}
+          </Alert>
+        </Snackbar>
+      )}
       <Grow in>
         <Container>
           <Grid
@@ -44,6 +76,7 @@ const App = () => {
               <AppointmentForm
                 currentId={currentId}
                 setCurrentId={setCurrentId}
+                setOpen={setOpen}
               ></AppointmentForm>
             </Grid>
           </Grid>

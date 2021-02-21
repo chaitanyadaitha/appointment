@@ -10,9 +10,9 @@ import useStyles from "./styles";
 
 const Appointments = ({ setCurrentId }) => {
   const classes = useStyles();
-  const appointments = useSelector((state) => state.appointments);
+  const appointments = useSelector((state) => state.appointments.data);
 
-  return !appointments.length ? (
+  return !appointments.length && !appointments.error ? (
     <CircularProgress />
   ) : (
     <Grid

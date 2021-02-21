@@ -20,6 +20,8 @@ import { deleteAppointment } from "../../../actions/appointments";
 
 import moment from "moment";
 
+import defaultImg from "../../../assets/default.png";
+
 const Appointment = ({ appointment, setCurrentId }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
@@ -28,7 +30,7 @@ const Appointment = ({ appointment, setCurrentId }) => {
     <Card className={classes.card}>
       <CardMedia
         className={classes.media}
-        image={appointment.selectedFile}
+        image={appointment.selectedFile ? appointment.selectedFile : defaultImg}
         title={`${appointment.firstName} - ${appointment.lastName}`}
       />
       <div className={classes.overlay}>

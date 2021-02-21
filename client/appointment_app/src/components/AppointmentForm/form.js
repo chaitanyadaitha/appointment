@@ -23,14 +23,14 @@ const dateStyles = makeStyles((theme) => ({
   },
 }));
 
-const AppointmentForm = ({ currentId, setCurrentId }) => {
+const AppointmentForm = ({ currentId, setCurrentId, setOpen }) => {
   const classes = useStyles();
 
   const dateClasses = dateStyles();
   const dispatch = useDispatch();
 
   const appointment = useSelector((state) =>
-    currentId ? state.appointments.find((p) => p._id == currentId) : null
+    currentId ? state.appointments.data.find((p) => p._id == currentId) : null
   );
 
   useEffect(() => {
@@ -50,14 +50,34 @@ const AppointmentForm = ({ currentId, setCurrentId }) => {
   };
 
   const [postData, setPostData] = useState(defaultState);
+  const [error, setErrors] = useState({});
+
+  const validate = () => {
+    let err = {};
+    err.firstName = postData.firstName ? "" : "This Field is Required";
+    err.lastName = postData.lastName ? "" : "This Field is Required";
+    err.message = postData.message ? "" : "This Field is Required";
+    err.doa = postData.doa ? "" : "Please select an appointment date";
+    err.place = postData.place ? "" : "This Field is Required";
+    err.phoneNumber = postData.phoneNumber ? "" : "This Field is Required";
+
+    setErrors({
+      ...err,
+    });
+
+    return Object.values(err).every((val) => val == "");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (currentId) {
-      dispatch(updateAppointment(currentId, postData));
-    } else dispatch(postAppointment(postData));
-
-    clear();
-    setCurrentId(null);
+    if (validate()) {
+      if (currentId) {
+        dispatch(updateAppointment(currentId, postData));
+      } else dispatch(postAppointment(postData));
+      clear();
+      setCurrentId(null);
+      setOpen(true);
+    }
   };
   const clear = () => {
     // Clearing the state.
@@ -85,6 +105,7 @@ const AppointmentForm = ({ currentId, setCurrentId }) => {
           onChange={(e) =>
             setPostData({ ...postData, firstName: e.target.value })
           }
+          {...(error.firstName && { error: true, helperText: error.firstName })}
         />
         <TextField
           name='lastName'
@@ -96,6 +117,7 @@ const AppointmentForm = ({ currentId, setCurrentId }) => {
           onChange={(e) =>
             setPostData({ ...postData, lastName: e.target.value })
           }
+          {...(error.lastName && { error: true, helperText: error.lastName })}
         />
         <TextField
           name='place'
@@ -105,6 +127,7 @@ const AppointmentForm = ({ currentId, setCurrentId }) => {
           required={true}
           value={postData.place}
           onChange={(e) => setPostData({ ...postData, place: e.target.value })}
+          {...(error.place && { error: true, helperText: error.place })}
         />
         <MuiPhoneNumber
           name='phoneNumber'
@@ -114,6 +137,10 @@ const AppointmentForm = ({ currentId, setCurrentId }) => {
           value={postData.phoneNumber}
           onChange={(e) => setPostData({ ...postData, phoneNumber: e })}
           fullWidth
+          {...(error.phoneNumber && {
+            error: true,
+            helperText: error.phoneNumber,
+          })}
         />
         <TextField
           id='datetime-local'
@@ -127,6 +154,7 @@ const AppointmentForm = ({ currentId, setCurrentId }) => {
             shrink: true,
           }}
           onChange={(e) => setPostData({ ...postData, doa: e.target.value })}
+          {...(error.doa && { error: true, helperText: error.doa })}
         />
         <TextField
           name='message'
@@ -138,6 +166,7 @@ const AppointmentForm = ({ currentId, setCurrentId }) => {
           onChange={(e) =>
             setPostData({ ...postData, message: e.target.value })
           }
+          {...(error.message && { error: true, helperText: error.message })}
         />
         <div className={classes.fileInput}>
           <Typography variant='subtitle2'>
