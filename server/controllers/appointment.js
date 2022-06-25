@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import PostAppointment from "../models/appointmentSchema.js";
+import Doctors from "../models/doctorsSchema.js";
 
 export const getAppointment = async (req, res) => {
   try {
@@ -14,14 +15,36 @@ export const getAppointment = async (req, res) => {
 export const createAppointment = async (req, res) => {
   const appointment = req.body;
 
+  let appointments_list = [];
   const newAppoint = new PostAppointment(appointment);
+
+  const doctorInfo = await Doctors.findById(req.body.doctor);
+
+  if (doctorInfo) {
+    const start = doctorInfo.availability[0];
+    const end = doctorInfo.availability[1];
+    const appointment_time = Number(new Date(req.body.doa).toLocaleString('en-GB').split(',')[1].trim().split(':')[0]);
+    console.log(appointment_time, start, end)
+    if (appointment_time < start || appointment_time >= end) {
+      let error = {
+        errorMessage: `Doctor is not in service at this time ${new Date(req.body.doa).toLocaleString('en-GB').split(',')[1].trim()}`,
+      }
+      return res.status(500).json(error);
+    } else {
+      appointments_list.push({
+        doctor: req.body.doctor,
+        appointment: new Date(req.body.doa).toLocaleString('en-GB').split(',')[1].trim(),
+        patient: `${newAppoint.firstName} ${newAppoint.lastName}`
+      })
+    }
+  }
 
   try {
     if (appointment.firstName == "") {
       throw { message: "Error!!!" };
     } else {
       await newAppoint.save();
-      res.status(201).json(newAppoint);
+      res.status(201).json({ newAppoint, appointment_info: appointments_list });
     }
   } catch (error) {
     res.status(500).json({ error: error.message });

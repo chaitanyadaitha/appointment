@@ -8,9 +8,9 @@ const appointmentSchema = mongoose.Schema({
     default: new Date(),
   },
   message: String,
-  selectedFile: String,
   place: String,
   phoneNumber: String,
+  doctor: String
 });
 
 const AppointmentSchema = mongoose.model(

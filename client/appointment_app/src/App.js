@@ -17,9 +17,8 @@ import { getAppointments } from "./actions/appointments";
 
 import Appointments from "./components/Appointments/appointments";
 
-import AppointmentForm from "./components/AppointmentForm/form";
-
 import useStyles from "./styles";
+import { getDoctors } from "./actions/doctors";
 
 const App = () => {
   const classes = useStyles();
@@ -32,10 +31,11 @@ const App = () => {
     (state) => state.appointments.successMessage
   );
 
-  console.log("selector", successMessage);
-
   useEffect(() => {
-    if (!error) dispatch(getAppointments());
+    if (!error) {
+      dispatch(getDoctors());
+      dispatch(getAppointments());
+    }
     else setOpen(true);
   }, [currentId, dispatch]);
 
@@ -43,7 +43,7 @@ const App = () => {
     <Container maxWidth='lg'>
       <AppBar className={classes.appBar} position='static' color='inherit'>
         <Typography variant='h4' align='center' className={classes.heading}>
-          Sri Gayatri Jyothisya Nilayam
+          Apollo Doctor's Appointment
         </Typography>
       </AppBar>
       {(error || successMessage) && (
@@ -68,16 +68,8 @@ const App = () => {
             alignItems='stretch'
             spacing={3}
           >
-            <Grid item xs={12} sm={7}>
+            <Grid item xs={12} sm={12}>
               <Appointments setCurrentId={setCurrentId}></Appointments>
-            </Grid>
-
-            <Grid item xs={12} sm={4}>
-              <AppointmentForm
-                currentId={currentId}
-                setCurrentId={setCurrentId}
-                setOpen={setOpen}
-              ></AppointmentForm>
             </Grid>
           </Grid>
         </Container>

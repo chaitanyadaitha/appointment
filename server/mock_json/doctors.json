@@ -1,0 +1,59 @@
+{
+    "doctors": [
+        {
+            "firstName": "Doctor1",
+            "lastName": "A",
+            "specialities": "Sp1,Sp2,Sp3",
+            "availability": [
+                1,
+                2
+            ],
+            "profile": "https://via.placeholder.com/600/92c952",
+            "cost": 200
+        },
+        {
+            "firstName": "Doctor2",
+            "lastName": "A",
+            "specialities": "Sp1,Sp2,Sp3",
+            "availability": [
+                1,
+                2
+            ],
+            "profile": "https://via.placeholder.com/600/771796",
+            "cost": 200
+        },
+        {
+            "firstName": "Doctor3",
+            "lastName": "A",
+            "specialities": "Sp1,Sp2,Sp3",
+            "availability": [
+                1,
+                2
+            ],
+            "profile": "https://via.placeholder.com/600/24f355",
+            "cost": 200
+        },
+        {
+            "firstName": "Doctor4",
+            "lastName": "A",
+            "specialities": "Sp1,Sp2,Sp3",
+            "availability": [
+                1,
+                2
+            ],
+            "profile": "https://via.placeholder.com/600/d32776",
+            "cost": 200
+        },
+        {
+            "firstName": "Doctor5",
+            "lastName": "A",
+            "specialities": "Sp1,Sp2,Sp3",
+            "availability": [
+                1,
+                2
+            ],
+            "profile": "https://via.placeholder.com/600/f66b97",
+            "cost": 200
+        }
+    ]
+}

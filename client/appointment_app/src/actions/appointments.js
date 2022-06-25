@@ -15,12 +15,12 @@ export const getAppointments = () => async (dispatch) => {
 export const postAppointment = (appointment) => async (dispatch) => {
   try {
     const { data } = await api.postAppointment(appointment);
-
     dispatch({ type: "CREATE_APPOINTMENT", payload: data });
+    dispatch({ type: "ADD_APPOINTMENT_TO_DOCTOR", payload: data.appointment_info })
   } catch (error) {
     if (error.response && error.response.data) {
-      dispatch({ type: "ERROR", payload: error.response.data.error });
-    } else dispatch({ type: "ERROR", payload: "Errro dummy" });
+      dispatch({ type: "ERROR", payload: error.response.data.errorMessage });
+    } else dispatch({ type: "ERROR", payload: error });
   }
 };
 

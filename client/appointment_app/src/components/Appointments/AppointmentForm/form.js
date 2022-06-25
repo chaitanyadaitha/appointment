@@ -6,11 +6,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import MuiPhoneNumber from "material-ui-phone-number";
 
 import { TextField, Button, Typography, Paper } from "@material-ui/core";
-import FileBase from "react-file-base64";
 
 import useStyles from "./styles";
 
-import { postAppointment, updateAppointment } from "../../actions/appointments";
+import { updateAppointment } from "../../../actions/appointments";
 
 const dateStyles = makeStyles((theme) => ({
   container: {
@@ -23,7 +22,7 @@ const dateStyles = makeStyles((theme) => ({
   },
 }));
 
-const AppointmentForm = ({ currentId, setCurrentId, setOpen }) => {
+const AppointmentForm = ({ doctor, currentId, handleAppointment }) => {
   const classes = useStyles();
 
   const dateClasses = dateStyles();
@@ -46,7 +45,7 @@ const AppointmentForm = ({ currentId, setCurrentId, setOpen }) => {
     doa: "",
     phoneNumber: "",
     place: "",
-    selectedFile: "",
+    doctor: doctor._id
   };
 
   const [postData, setPostData] = useState(defaultState);
@@ -73,28 +72,22 @@ const AppointmentForm = ({ currentId, setCurrentId, setOpen }) => {
     if (validate()) {
       if (currentId) {
         dispatch(updateAppointment(currentId, postData));
-      } else dispatch(postAppointment(postData));
+      } else handleAppointment(postData);
       clear();
-      setCurrentId(null);
-      setOpen(true);
     }
   };
   const clear = () => {
-    // Clearing the state.
     setPostData(defaultState);
-    setCurrentId(null);
   };
   return (
-    <Paper className={classes.paper}>
+    <>
+      {doctor && doctor.firstName && (<span>Doctor: {doctor.firstName}</span>)}
       <form
         autoComplete='false'
         noValidate
         className={`${classes.root} ${classes.form}`}
         onSubmit={handleSubmit}
       >
-        <Typography variant='h6'>{`${
-          currentId ? "Editing" : "Request"
-        } an Appointment`}</Typography>
         <TextField
           name='firstName'
           variant='outlined'
@@ -159,7 +152,7 @@ const AppointmentForm = ({ currentId, setCurrentId, setOpen }) => {
         <TextField
           name='message'
           variant='outlined'
-          label='Leave a Message with Appointment'
+          label='Describe yout reason for appointment'
           fullWidth
           required={true}
           value={postData.message}
@@ -168,39 +161,28 @@ const AppointmentForm = ({ currentId, setCurrentId, setOpen }) => {
           }
           {...(error.message && { error: true, helperText: error.message })}
         />
-        <div className={classes.fileInput}>
-          <Typography variant='subtitle2'>
-            Select your Image for Identification
-          </Typography>
-          <FileBase
-            type='file'
-            multiple={false}
-            onDone={({ base64 }) =>
-              setPostData({ ...postData, selectedFile: base64 })
-            }
-          />
+        <div className={classes.margin_t}>
+          <Button
+            className={`${classes.buttonSubmit} ${classes.margin_r}`}
+            variant='contained'
+            color='primary'
+            size='large'
+            type='submit'
+          >
+            Submit
+          </Button>
+          <Button
+            className={classes.buttonSubmit}
+            variant='contained'
+            color='secondary'
+            size='large'
+            onClick={clear}
+          >
+            Clear
+          </Button>
         </div>
-        <Button
-          className={classes.buttonSubmit}
-          variant='contained'
-          color='primary'
-          size='large'
-          type='submit'
-          fullWidth
-        >
-          Submit
-        </Button>
-        <Button
-          variant='contained'
-          color='secondary'
-          size='small'
-          onClick={clear}
-          fullWidth
-        >
-          Clear
-        </Button>
       </form>
-    </Paper>
+    </>
   );
 };
 
